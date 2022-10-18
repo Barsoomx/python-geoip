@@ -209,7 +209,7 @@ class Database(object):
 
         :rtype: :class:`IPInfo`
         """
-        ip = urllib.urlopen('http://icanhazip.com/').read().strip()
+        ip = urllib.urlopen('https://icanhazip.com/').read().strip()
         return self.lookup(ip)
 
 
@@ -255,7 +255,10 @@ class MaxMindDatabase(Database):
         for i in range(bits):
             if node >= self.nodes:
                 break
-            bit = (ord(packed_addr[i >> 3]) >> (7 - (i % 8))) & 1
+            try:
+                bit = (packed_addr[i >> 3]) >> (7 - (i % 8)) & 1
+            except TypeError:
+                bit = (ord(packed_addr[i >> 3]) >> (7 - (i % 8))) & 1
             node = self._parse_node(node, bit)
             if node in seen:
                 raise LookupError('Circle in tree detected')
