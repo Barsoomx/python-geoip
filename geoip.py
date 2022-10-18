@@ -73,10 +73,28 @@ class IPInfo(object):
         self._data = data
 
     @property
-    def country(self):
+    def city(self):
+        """The city name if available."""
+        if 'city' in self._data:
+            return _native_str(self._data['city']['names']['en'])
+
+    @property
+    def country_code(self):
         """The country code as ISO code if available."""
         if 'country' in self._data:
             return _native_str(self._data['country']['iso_code'])
+
+    @property
+    def country_name(self):
+        """The country name in english."""
+        if 'country' in self._data:
+            return _native_str(self._data['country']['names']['en'])
+
+    @property
+    def postalcode(self):
+        """The postal code if available."""
+        if 'postal' in self._data:
+            return _native_str(self._data['postal']['code'])
 
     @property
     def continent(self):
@@ -113,7 +131,10 @@ class IPInfo(object):
         """
         return {
             'ip': self.ip,
-            'country': self.country,
+            'city': self.city,
+            'country_code': self.country_code,
+            'country_name': self.country_name,
+            'postalcode': self.postalcode,
             'continent': self.continent,
             'subdivisions': self.subdivisions,
             'timezone': self.timezone,
@@ -136,10 +157,12 @@ class IPInfo(object):
         return not self.__eq__(other)
 
     def __repr__(self):
-        return ('<IPInfo ip=%r country=%r continent=%r '
-                'subdivisions=%r timezone=%r location=%r>') % (
+        return ('<IPInfo ip=%r city=%r country_name=%r country_code=%r '
+                'continent=%r subdivisions=%r timezone=%r location=%r>') % (
             self.ip,
-            self.country,
+            self.city,
+            self.country_name,
+            self.country_code,
             self.continent,
             self.subdivisions,
             self.timezone,
